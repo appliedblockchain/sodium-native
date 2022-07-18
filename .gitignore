@@ -6,3 +6,4 @@ deps/libsodium*
 deps/unix
 deps/win
 deps/tmp
+prebuilds/

@@ -9,12 +9,12 @@ const path = require('path')
 const os = require('os')
 
 const IS_WINDOWS = process.platform === 'win32'
-const VERSION = '1.0.18'
+const VERSION = '1.0.16-algorand'
 const VS = 'v141'
 const MACOSX_DEPLOYMENT_TARGET = '10.10'
 
-const UNIX = `https://download.libsodium.org/libsodium/releases/libsodium-${VERSION}.tar.gz`
-const WIN = `https://download.libsodium.org/libsodium/releases/libsodium-${VERSION}-msvc.zip`
+const UNIX = `https://codeload.github.com/appliedblockchain/libsodium/tar.gz/refs/tags/${VERSION}`
+const WIN = `https://codeload.github.com/appliedblockchain/libsodium/zip/refs/tags/${VERSION}`
 
 const UNIX_OUT = path.join(__dirname, 'unix')
 const WIN_OUT = path.join(__dirname, 'win')
