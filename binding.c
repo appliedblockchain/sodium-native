@@ -2908,6 +2908,21 @@ napi_value sn_crypto_vrf_proof_to_hash (napi_env env, napi_callback_info info) {
   SN_RETURN(crypto_vrf_proof_to_hash(hash_data, proof_data), "failure decoding the proof")
 }
 
+napi_value sn_crypto_vrf_sk_to_seed (napi_env env, napi_callback_info info) {
+  SN_ARGV(2, crypto_vrf_sk_to_seed)
+
+
+  SN_ARGV_TYPEDARRAY(seed, 0)
+  SN_ARGV_TYPEDARRAY(skpk, 1)
+
+  SN_ASSERT_LENGTH(seed_size, crypto_vrf_SEEDBYTES, "seed")
+  SN_ASSERT_LENGTH(skpk_size, crypto_vrf_SECRETKEYBYTES, "skpk")
+
+  crypto_vrf_sk_to_seed(seed_data, skpk_data);
+
+  return NULL;
+}
+
 static napi_value create_sodium_native(napi_env env) {
   SN_THROWS(sodium_init() == -1, "sodium_init() failed")
 
