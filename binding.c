@@ -2826,6 +2826,88 @@ napi_value sn_crypto_stream_salsa20_xor_wrap_final (napi_env env, napi_callback_
   return NULL;
 }
 
+napi_value sn_crypto_vrf_keypair (napi_env env, napi_callback_info info) {
+  SN_ARGV(2, crypto_vrf_keypair)
+
+  SN_ARGV_TYPEDARRAY(pk, 0)
+  SN_ARGV_TYPEDARRAY(sk, 1)
+
+  SN_ASSERT_LENGTH(pk_size, crypto_vrf_PUBLICKEYBYTES, "pk")
+  SN_ASSERT_LENGTH(sk_size, crypto_vrf_SECRETKEYBYTES, "sk")
+
+  SN_RETURN(crypto_vrf_keypair(pk_data, sk_data), "failure generating keypair")
+}
+
+napi_value sn_crypto_vrf_keypair_from_seed (napi_env env, napi_callback_info info) {
+  SN_ARGV(3, crypto_vrf_keypair_from_seed)
+
+  SN_ARGV_TYPEDARRAY(pk, 0)
+  SN_ARGV_TYPEDARRAY(sk, 1)
+  SN_ARGV_TYPEDARRAY(seed, 2)
+
+  SN_ASSERT_LENGTH(pk_size, crypto_vrf_PUBLICKEYBYTES, "pk")
+  SN_ASSERT_LENGTH(sk_size, crypto_vrf_SECRETKEYBYTES, "sk")
+  SN_ASSERT_LENGTH(seed_size, crypto_vrf_SEEDBYTES, "seed")
+
+  SN_RETURN(crypto_vrf_keypair_from_seed(pk_data, sk_data, seed_data), "failure generating keypair from seed")
+}
+
+napi_value sn_crypto_vrf_sk_to_pk (napi_env env, napi_callback_info info) {
+  SN_ARGV(2, crypto_vrf_sk_to_pk)
+
+  SN_ARGV_TYPEDARRAY(pk, 0)
+  SN_ARGV_TYPEDARRAY(skpk, 1)
+
+  SN_ASSERT_LENGTH(pk_size, crypto_vrf_PUBLICKEYBYTES, "pk")
+  SN_ASSERT_LENGTH(skpk_size, crypto_vrf_SECRETKEYBYTES, "skpk")
+
+  crypto_vrf_sk_to_pk(pk_data, skpk_data);
+
+  return NULL;
+}
+
+napi_value sn_crypto_vrf_prove (napi_env env, napi_callback_info info) {
+  SN_ARGV(3, crypto_vrf_prove)
+
+  SN_ARGV_TYPEDARRAY(proof, 0)
+  SN_ARGV_TYPEDARRAY(sk, 1)
+  SN_ARGV_TYPEDARRAY(m, 2)
+
+  SN_ASSERT_LENGTH(proof_size, crypto_vrf_PROOFBYTES, "proof")
+  SN_ASSERT_LENGTH(sk_size, crypto_vrf_SECRETKEYBYTES, "sk")
+
+  SN_RETURN(crypto_vrf_prove(proof_data, sk_data, m_data, m_size), "failure decoding public key")
+}
+
+napi_value sn_crypto_vrf_verify (napi_env env, napi_callback_info info) {
+  SN_ARGV(4, crypto_vrf_verify)
+
+
+  SN_ARGV_TYPEDARRAY(output, 0)
+  SN_ARGV_TYPEDARRAY(pk, 1)
+  SN_ARGV_TYPEDARRAY(proof, 2)
+  SN_ARGV_TYPEDARRAY(m, 3)
+
+  SN_ASSERT_LENGTH(output_size, crypto_vrf_OUTPUTBYTES, "output")
+  SN_ASSERT_LENGTH(pk_size, crypto_vrf_PUBLICKEYBYTES, "pk")
+  SN_ASSERT_LENGTH(proof_size, crypto_vrf_PROOFBYTES, "proof")
+
+  SN_RETURN(crypto_vrf_verify(output_data, pk_data, proof_data, m_data, m_size), "failed proof verification")
+}
+
+napi_value sn_crypto_vrf_proof_to_hash (napi_env env, napi_callback_info info) {
+  SN_ARGV(2, crypto_vrf_proof_to_hash)
+
+
+  SN_ARGV_TYPEDARRAY(hash, 0)
+  SN_ARGV_TYPEDARRAY(proof, 1)
+
+  SN_ASSERT_LENGTH(hash_size, crypto_vrf_OUTPUTBYTES, "hash")
+  SN_ASSERT_LENGTH(proof_size, crypto_vrf_PROOFBYTES, "proof")
+
+  SN_RETURN(crypto_vrf_proof_to_hash(hash_data, proof_data), "failure decoding the proof")
+}
+
 static napi_value create_sodium_native(napi_env env) {
   SN_THROWS(sodium_init() == -1, "sodium_init() failed")
 
@@ -2985,6 +3067,12 @@ static napi_value create_sodium_native(napi_env env) {
   SN_EXPORT_FUNCTION(crypto_secretstream_xchacha20poly1305_push, sn_crypto_secretstream_xchacha20poly1305_push)
   SN_EXPORT_FUNCTION(crypto_secretstream_xchacha20poly1305_pull, sn_crypto_secretstream_xchacha20poly1305_pull)
   SN_EXPORT_FUNCTION(crypto_secretstream_xchacha20poly1305_rekey, sn_crypto_secretstream_xchacha20poly1305_rekey)
+  SN_EXPORT_FUNCTION(crypto_vrf_keypair, sn_crypto_vrf_keypair)
+  SN_EXPORT_FUNCTION(crypto_vrf_keypair_from_seed, sn_crypto_vrf_keypair_from_seed)
+  SN_EXPORT_FUNCTION(crypto_vrf_sk_to_pk, sn_crypto_vrf_sk_to_pk)
+  SN_EXPORT_FUNCTION(crypto_vrf_prove, sn_crypto_vrf_prove)
+  SN_EXPORT_FUNCTION(crypto_vrf_verify, sn_crypto_vrf_verify)
+  SN_EXPORT_FUNCTION(crypto_vrf_proof_to_hash, sn_crypto_vrf_proof_to_hash)
   SN_EXPORT_UINT32(crypto_generichash_STATEBYTES, sizeof(crypto_generichash_state))
   SN_EXPORT_UINT32(crypto_onetimeauth_STATEBYTES, sizeof(crypto_onetimeauth_state))
   SN_EXPORT_UINT32(crypto_hash_sha256_STATEBYTES, sizeof(crypto_hash_sha256_state))
@@ -3116,6 +3204,11 @@ static napi_value create_sodium_native(napi_env env) {
   SN_EXPORT_UINT32(crypto_secretstream_xchacha20poly1305_KEYBYTES, crypto_secretstream_xchacha20poly1305_KEYBYTES)
   SN_EXPORT_UINT32(crypto_secretstream_xchacha20poly1305_TAGBYTES, 1)
   SN_EXPORT_UINT64(crypto_secretstream_xchacha20poly1305_MESSAGEBYTES_MAX, crypto_secretstream_xchacha20poly1305_MESSAGEBYTES_MAX)
+  SN_EXPORT_UINT32(crypto_vrf_PUBLICKEYBYTES, crypto_vrf_PUBLICKEYBYTES)
+  SN_EXPORT_UINT32(crypto_vrf_SECRETKEYBYTES, crypto_vrf_SECRETKEYBYTES)
+  SN_EXPORT_UINT32(crypto_vrf_SEEDBYTES, crypto_vrf_SEEDBYTES)
+  SN_EXPORT_UINT32(crypto_vrf_PROOFBYTES, crypto_vrf_PROOFBYTES)
+  SN_EXPORT_UINT32(crypto_vrf_OUTPUTBYTES, crypto_vrf_OUTPUTBYTES)
   SN_EXPORT_BYTE_TAG_AS_BUFFER(crypto_secretstream_xchacha20poly1305_TAG_MESSAGE, 1, crypto_secretstream_xchacha20poly1305_TAG_MESSAGE)
   SN_EXPORT_BYTE_TAG_AS_BUFFER(crypto_secretstream_xchacha20poly1305_TAG_PUSH, 1, crypto_secretstream_xchacha20poly1305_TAG_PUSH)
   SN_EXPORT_BYTE_TAG_AS_BUFFER(crypto_secretstream_xchacha20poly1305_TAG_REKEY, 1, crypto_secretstream_xchacha20poly1305_TAG_REKEY)

@@ -7,3 +7,4 @@ deps/unix
 deps/win
 deps/tmp
 prebuilds/
+.vscode/
