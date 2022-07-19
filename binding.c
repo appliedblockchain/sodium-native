@@ -3088,6 +3088,7 @@ static napi_value create_sodium_native(napi_env env) {
   SN_EXPORT_FUNCTION(crypto_vrf_prove, sn_crypto_vrf_prove)
   SN_EXPORT_FUNCTION(crypto_vrf_verify, sn_crypto_vrf_verify)
   SN_EXPORT_FUNCTION(crypto_vrf_proof_to_hash, sn_crypto_vrf_proof_to_hash)
+  SN_EXPORT_FUNCTION(crypto_vrf_sk_to_seed, sn_crypto_vrf_sk_to_seed)
   SN_EXPORT_UINT32(crypto_generichash_STATEBYTES, sizeof(crypto_generichash_state))
   SN_EXPORT_UINT32(crypto_onetimeauth_STATEBYTES, sizeof(crypto_onetimeauth_state))
   SN_EXPORT_UINT32(crypto_hash_sha256_STATEBYTES, sizeof(crypto_hash_sha256_state))
