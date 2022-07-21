@@ -17,7 +17,7 @@
     "dev": "node-gyp rebuild",
     "fetch-libsodium": "node deps/bin.js --fetch --no-build",
     "test": "standard && tape \"test/*.js\"",
-    "postinstall": "node-gyp-build",
+    "node-gyp-build": "node-gyp-build",
     "prebuild": "prebuildify --napi --strip",
     "prebuild-ia32": "prebuildify --arch=ia32 --napi --strip"
   },
